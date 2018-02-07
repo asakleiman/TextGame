@@ -10,23 +10,28 @@ var userY = 0
 var treasureX = 3
 var treasureY = 3
 
-////set various poi coordinates
-//var poiHillsX = 1
-//var poiHillsY = 1
-//
-//var poiLakeX = 2
-//var poiLakeY = 2
-
 //Create randomized numerical map of game pois. Why won't you work, var mapGrid = [[][]] ?
 
 var mapGridX = []
 var mapGridY = []
-mapGridX[1] = 1
-mapGridY[1] = 1
-mapGridX[2] = 2
-mapGridY[2] = 2
 
-//Flag that controls loop
+// random point of interest placement loop
+var randX
+var randY //lol, i'm 5
+var mapPlacer = 0
+
+while (mapPlacer < 5){
+  randX = Math.floor(Math.random() * Math.floor(maxX + 1))
+  randY = Math.floor(Math.random() * Math.floor(maxY + 1))
+  if (mapGridX[randX] == undefined && mapGridY[randY] == undefined){
+    mapGridX[randX] = mapPlacer
+    mapGridY[randY] = mapPlacer
+    mapPlacer++
+  }
+}
+
+
+//Flag that controls main loop
 var treasureFound = false
 
 //create descriptions for Point Of Interest in the game. The variables are called poi because of that and not because of the fish, though I can understand why you might think that.
@@ -49,15 +54,15 @@ window.alert(userLocationDescription)
 
 while (!treasureFound){
   //add valid POI for location
-  poiLegalDirections=" What direction do you want to go in? Pick one:"
-  userLocationDescription="You are on a particularly forgettable part of the island." + userX + userY
-  if(mapGridX[userX] == 1 && mapGridY[userY] == 1){
+  poiLegalDirections=" GPS:" + userX + "," + userY + " What direction do you want to go in? Pick one:"
+  userLocationDescription="You are on a particularly forgettable part of the island." 
+  if(mapGridX[userX] == 0 && mapGridY[userY] == 0){
     userLocationDescription = poiHills
-  }else if(mapGridX[userX] == 2 && mapGridY[userY] == 2){
+  }else if(mapGridX[userX] == 1 && mapGridY[userY] == 1){
     userLocationDescription = poiLake
-  }else if(mapGridX[userX] == 1 && mapGridY[userY] == 2){
+  }else if(mapGridX[userX] == 2 && mapGridY[userY] == 2){
     userLocationDescription = poiShovel
-  }else if(mapGridX[userX] == 2 && mapGridY[userY] == 1){
+  }else if(mapGridX[userX] == 3 && mapGridY[userY] == 3){
     userLocationDescription = poiPoi
   }
   
@@ -85,14 +90,14 @@ while (!treasureFound){
   //compose location text 
   userLocationDescription =  userLocationDescription + poiLegalDirections
   //add ask for input
-  var direction = prompt(userLocationDescription)
-  
+  var direction = prompt(userLocationDescription).toUpperCase()
+
   
   // temp vars only used for checking valid user destination
   var newX
   var newY
   
-  if(direction.toUpperCase == "N"){
+  if(direction == "N"){
     newX = userX 
     newY = userY + 1
     // neither value < 0, neither is > max
@@ -104,7 +109,7 @@ while (!treasureFound){
      window.alert("There is nothing but expansive ocean that way.") 
     }
  
-  }else if(direction.toUpperCase == "E"){
+  }else if(direction == "E"){
     newX = userX + 1
     newY = userY 
     // neither value < 0, neither is > max
@@ -115,7 +120,7 @@ while (!treasureFound){
      window.alert("There is nothing but wind-driven ocean that way.") 
     }
     
-  }else if(direction.toUpperCase == "S"){
+  }else if(direction == "S"){
     newX = userX 
     newY = userY - 1 
     // neither value < 0, neither is > max
@@ -126,7 +131,7 @@ while (!treasureFound){
      window.alert("There is nothing but wine-dark ocean that way.") 
     }
     
-  }else if(direction.toUpperCase == "W"){
+  }else if(direction == "W"){
     newX = userX - 1
     newY = userY
     // neither value < 0, neither is > max
@@ -138,11 +143,13 @@ while (!treasureFound){
     }
     
   }else {
-    window.alert("Please use the capital letter of the direction you want to go.") 
+    window.alert("Please use the first letter of the direction you want to go.") 
   } 
     // see if user location matches treasure
-  if (userX == treasureX && userY == treasureY){
+  if (mapGridX[userX] == 4 && mapGridY[userY] == 4){
     window.alert("A winner is you, " + name +".")
+    // Add a win screen!
+    
     treasureFound = true
 
     }
