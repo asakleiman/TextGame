@@ -1,14 +1,11 @@
-// Define size of the game area
-var maxX = 4
-var maxY = 4
+//TODO: Increase difficulty by removing GPS & making user find map.
+//TODO: Remove all debug checks
 
-// Set user start location
+// Define size of the game area,set default start
+var maxX = 10
+var maxY = 10
 var userX = 0
 var userY = 0
-
-// Set treasure location
-var treasureX = 3
-var treasureY = 3
 
 //Create randomized numerical map of game pois. Why won't you work, var mapGrid = [[][]] ?
 
@@ -17,31 +14,98 @@ var mapGridY = []
 
 // random point of interest placement loop
 var randX
-var randY //lol, i'm 5
+var randY //lol, i'm 12
 var mapPlacer = 0
 
-while (mapPlacer < 5){
+// populate the map with points of interest
+
+while (mapPlacer < 10){
   randX = Math.floor(Math.random() * Math.floor(maxX + 1))
   randY = Math.floor(Math.random() * Math.floor(maxY + 1))
   if (mapGridX[randX] == undefined && mapGridY[randY] == undefined){
     mapGridX[randX] = mapPlacer
     mapGridY[randY] = mapPlacer
+ //   window.alert(mapPlacer + ":" + randX + ","+ randY) // Debug check
     mapPlacer++
   }
 }
 
+//this makes a map of the island and sets the start location
+var cartX = 0
+var cartY = maxY
+var cartoMap = ""
 
-//Flag that controls main loop
+////Start at the top, compose ascii map
+while (cartY >= 0){
+  cartX = 0
+  while(cartX <= maxX){
+  //figure out how to put markers on the map. essentially copy main gameplay code
+    if(mapGridX[cartX] == 1 && mapGridY[cartY] == 1){
+      // hills
+      cartoMap = cartoMap + "m"
+    } else if(mapGridX[cartX] == 2 && mapGridY[cartY] == 2){
+      //lake 
+      cartoMap = cartoMap + "O"
+    }else if(mapGridX[cartX] == 3 && mapGridY[cartY] == 3){
+      //Zork
+      cartoMap = cartoMap + "@"
+    }else if(mapGridX[cartX] == 4 && mapGridY[cartY] == 4){
+      //Forest
+      cartoMap = cartoMap + "^"
+    }else if(mapGridX[cartX] == 5 && mapGridY[cartY] == 5){
+      //Poi
+      cartoMap = cartoMap + ">"
+    }else if(mapGridX[cartX] == 6 && mapGridY[cartY] == 6){
+      //obelisk
+      cartoMap = cartoMap + "|"
+    }else if(mapGridX[cartX] == 7 && mapGridY[cartY] == 7){
+      //map
+      cartoMap = cartoMap + "+"
+    }else if(mapGridX[cartX] == 8 && mapGridY[cartY] == 8){
+      //shovel
+      cartoMap = cartoMap + "/"
+    }else if(mapGridX[cartX] == 9 && mapGridY[cartY] == 9){
+      //treasure
+      cartoMap = cartoMap + "X"
+    }else if(mapGridX[cartX] == 0 && mapGridY[cartY] == 0){
+      //Player Start
+      cartoMap = cartoMap + "."
+      userX = cartX
+      userY = cartY
+    }else {
+      //blank
+      cartoMap = cartoMap + "+"
+    }
+    cartX++
+  }
+  cartoMap = cartoMap + "\n"
+  cartY--
+}
+window.alert(cartoMap)
+
+//// Set user start location. We consider it a poi now. OLD CODE. DELETE WHEN NEW CODE IS GOOD. I don't know why this didn't work!
+//userX = mapGridX[0]
+//userY = mapGridY[0]
+//window.alert("X:"+ userX +" Y:" + userY )
+
+//Flags that control acheivements
 var treasureFound = false
+var mapFound = true
+var shovelFound = false
+
 
 //create descriptions for Point Of Interest in the game. The variables are called poi because of that and not because of the fish, though I can understand why you might think that.
 
 var poiHills="You are in the hills. They have eyes, you know. Just be thankful there's no music."
 var poiLake="You are by the lake district, home to poets and livestock."
-var poiShovel="There is a shovel here, sitting all unattended, like taking it hasn't been implimented yet."
+var poiZork="You are standing in an open feild outside of a big white house with a boarded front door. There is a small mailbox here. They are empty of leaflets, great undergound empires, and -sadly for you- treasure."
+var poiForest="There's a huge forest here full of verdant majesty, but you're having a hard time enjoying it with all these trees in the way."
+var poiShovel="You found a shovel! Now you have a shovel, so at least you got that going for you."
 var poiPoi="There is a fish here. It is a joke for people who read javascript comments."
-var poiClue="There is a clue here. It reads:"
 var poiLegalDirections="This text should never be displayed, it should be replaced before the user sees it. It will contain the valid exits available to the user."
+var poiDugHole="Nothing here but an empty hole. Basically a shallow grave for your dignity. You notice a distinct lack of treasure."
+var poiMap="You found a map! I wonder what these symbols could mean. \n"
+var poiObelisk="A lonley obelisk is here, engraved with the name Ogdred Weary."
 
 // Get user's name.
 var name = prompt("Oh, hello. Welcome to the island. What do you want to be called?")
@@ -53,45 +117,97 @@ var userLocationDescription = "Hello, " + name + ", if that really is your name.
 window.alert(userLocationDescription)
 
 while (!treasureFound){
-  //add valid POI for location
+ 
+  // set up universal location data & default description
   poiLegalDirections=" GPS:" + userX + "," + userY + " What direction do you want to go in? Pick one:"
   userLocationDescription="You are on a particularly forgettable part of the island." 
-  if(mapGridX[userX] == 0 && mapGridY[userY] == 0){
-    userLocationDescription = poiHills
-  }else if(mapGridX[userX] == 1 && mapGridY[userY] == 1){
-    userLocationDescription = poiLake
-  }else if(mapGridX[userX] == 2 && mapGridY[userY] == 2){
-    userLocationDescription = poiShovel
-  }else if(mapGridX[userX] == 3 && mapGridY[userY] == 3){
-    userLocationDescription = poiPoi
+  
+
+//  if(mapGridX[userX] == 1 && mapGridY[userY] == 1){ // Old code, remove when 100% sure new code works.
+//    userLocationDescription = poiHills
+//  }else if(mapGridX[userX] == 2 && mapGridY[userY] == 2){
+//    userLocationDescription = poiLake
+//  }else if(mapGridX[userX] == 2 && mapGridY[userY] == 2){
+//    userLocationDescription = poiShovel
+    //TODO add hasShovel variable. Reset location to blank.
+  
+    
+    //add valid POI descriptions for location
+    if(mapGridX[userX] == 1 && mapGridY[userY] == 1){
+      // hills
+      userLocationDescription = poiHills
+    } else if(mapGridX[userX] == 2 && mapGridY[userY] == 2){
+      //lake 
+      userLocationDescription = poiLake
+    }else if(mapGridX[userX] == 3 && mapGridY[userY] == 3){
+      //Zork
+      userLocationDescription = poiZork
+    }else if(mapGridX[userX] == 4 && mapGridY[userY] == 4){
+      //Forest
+      userLocationDescription = poiForest
+    }else if(mapGridX[userX] == 5 && mapGridY[userY] == 5){
+      //Poi
+      userLocationDescription = poiPoi
+    }else if(mapGridX[userX] == 6 && mapGridY[userY] == 6){
+      //obelisk
+      userLocationDescription = poiObelisk
+    }else if(mapGridX[userX] == 7 && mapGridY[userY] == 7){
+      //map
+      mapFound = true
+    }else if(mapGridX[userX] == 8 && mapGridY[userY] == 8){
+      //shovel
+      if(shovelFound == false){
+        userLocationDescription = userLocationDescription + poiShovel
+        shovelFound = true
+        //remove the shovel from the map. Now you have it.
+        mapGridX[userX] = undefined
+        mapGridY[userY] = undefined
+      }
+    }else if(mapGridX[userX] == 10 && mapGridY[userY] == 10){
+      //empty hole
+      userLocationDescription = userLocationDescription + poiDugHole
+    }
+  
+  //Give the user the map if they've found it.
+  if(mapFound == true){
+    userLocationDescription = poiMap + cartoMap + userLocationDescription
+  }
+  
+  
+  //Give the user the option to dig if they have the shovel
+  if(mapGridX[userX] == undefined && mapGridY[userY] == undefined){
+    if(shovelFound == true){
+    poiLegalDirections = poiLegalDirections + " Dig,"
+    }
   }
   
   //identify relevant directions to offer user
   if(userY < maxY){
-    poiLegalDirections = poiLegalDirections + " N"
+    poiLegalDirections = poiLegalDirections + " North"
     
     }
 
   if(userY > 0){
-    poiLegalDirections = poiLegalDirections + " S"
+    poiLegalDirections = poiLegalDirections + " South"
     
     }  
 
   if(userX < maxX){
-    poiLegalDirections = poiLegalDirections + " E"
+    poiLegalDirections = poiLegalDirections + " East"
    
     }  
 
   if(userX > 0){
-    poiLegalDirections = poiLegalDirections + " W"
+    poiLegalDirections = poiLegalDirections + " West"
     
-    }  
-
+    } 
+  
   //compose location text 
   userLocationDescription =  userLocationDescription + poiLegalDirections
-  //add ask for input
+  //ask for input
   var direction = prompt(userLocationDescription).toUpperCase()
 
+  //make sure new input is valid + move player location
   
   // temp vars only used for checking valid user destination
   var newX
@@ -142,16 +258,28 @@ while (!treasureFound){
      window.alert("There is nothing but endless ocean that way.") 
     }
     
+  }else if(direction == "D"){
+    // see if user location matches treasure
+    if (shovelFound == true){
+      if(mapGridX[userX] == 9 && mapGridY[userY] == 9){
+      window.alert("A winner is you, " + name +".")
+      // Add a win screen!
+
+      treasureFound = true
+
+      }else {
+        // put a hole in the ground
+        mapGridX[userX] = 10
+        mapGridY[userY] = 10
+      }
+    } else{
+      window.alert("You can't dig!")
+    }
+    
+    
   }else {
     window.alert("Please use the first letter of the direction you want to go.") 
   } 
-    // see if user location matches treasure
-  if (mapGridX[userX] == 4 && mapGridY[userY] == 4){
-    window.alert("A winner is you, " + name +".")
-    // Add a win screen!
-    
-    treasureFound = true
 
-    }
   
 }
