@@ -165,7 +165,7 @@ while (!treasureFound){
       }
     }else if(mapGridX[userX] == 10 && mapGridY[userY] == 10){
       //empty hole
-      userLocationDescription = userLocationDescription + poiDugHole
+      userLocationDescription = poiDugHole
     }
   
   //Give the user the map if they've found it.
@@ -175,11 +175,11 @@ while (!treasureFound){
   
   
   //Give the user the option to dig if they have the shovel
-  if(mapGridX[userX] == undefined && mapGridY[userY] == undefined){
+
     if(shovelFound == true){
-    poiLegalDirections = poiLegalDirections + " Dig,"
+    poiLegalDirections = poiLegalDirections + " Dig"
     }
-  }
+  
   
   //identify relevant directions to offer user
   if(userY < maxY){
@@ -268,7 +268,8 @@ while (!treasureFound){
       treasureFound = true
 
       }else {
-        // put a hole in the ground
+        // put a hole in the ground if there's not a landmark here
+        //TODO: prevent players from digging up landmarks
         mapGridX[userX] = 10
         mapGridY[userY] = 10
       }
