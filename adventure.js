@@ -82,7 +82,7 @@ while (cartY >= 0){
   cartoMap = cartoMap + "\n"
   cartY--
 }
-console.log(cartoMap)
+
 
 //// Set user start location. We consider it a poi now. OLD CODE. DELETE WHEN NEW CODE IS GOOD. I don't know why this didn't work!
 //userX = mapGridX[0]
@@ -98,7 +98,7 @@ var shovelFound = false
 //create descriptions for Point Of Interest in the game. The variables are called poi because of that and not because of the fish, though I can understand why you might think that.
 
 var poiHills="You are in the hills. They have eyes, you know. Just be thankful there's no music. "
-var poiLake="You are by the lake district, home to poets and livestock. "
+var poiLake="You are at the lake district, home to poets and livestock. "
 var poiZork="You are standing in an open feild outside of a big white house with a boarded front door. There is a small mailbox here. They are empty of leaflets, great undergound empires, and -sadly for you- treasure. "
 var poiForest="There's a huge forest here full of verdant majesty, but you're having a hard time enjoying it with all these trees in the way. "
 var poiShovel="You found a shovel! Now you have a shovel, so at least you got that going for you. "
@@ -110,10 +110,10 @@ var poiObelisk="A lonely obelisk is here, engraved with the name Ogdred Weary."
 
 // Get user's name.
 var name = prompt("Oh, hello. Welcome to the island. What do you want to be called?")
-
+console.log(cartoMap)
 //Set up inital location description.
 
-var userLocationDescription = "Hello, " + name + ", if that really is your name. You are now stranded on a desert island. Find a treasure to leave. Doesn't make sense? Too bad, read Descartes if you want sense."
+var userLocationDescription = "Hello, " + name + ", if that really is your name. You are now stranded on a desert island. Find a treasure to leave. \n Oh hey, you found a map! Unfortunately it fell into your console. Hopefully you opened it before you began the game. \n Doesn't make sense? Too bad, read Descartes if you want sense."
 
 window.alert(userLocationDescription)
 
@@ -161,6 +161,7 @@ while (!treasureFound){
       if(shovelFound == false){
         userLocationDescription = userLocationDescription + "\n" + poiShovel
         shovelFound = true
+        console.log("Inventory: A shovel. No tea.")
         //remove the shovel from the map. Now you have it.
         mapGridX[userX] = undefined
         mapGridY[userY] = undefined
@@ -281,7 +282,7 @@ while (!treasureFound){
         mapGridY[userY] = 10
       }
     } else{
-      window.alert("You can't dig without a shovel!")
+      window.alert("You can't dig without a shovel. Or a spade, if you swing that way.")
     }
     
     
